@@ -1439,6 +1439,42 @@ blah = blah
       validate_file(expected_content_ten, tmpfile)
     end
 
+    expected_content_seventeen = <<-EOS
+# This is a comment
+[section1]
+; This is also a comment
+foo=foovalue
+
+bar = barvalue
+master = true
+[section2]
+
+foo= foovalue2
+baz=bazvalue
+url = http://192.168.1.1:8080
+[section:sub]
+subby=bar
+    #another comment
+ ; yet another comment
+
+-nonstandard-
+  shoes = purple
+  yahoo = yippee
+
+section_name: section_seventeen
+key1: value1
+section_name: section_seventeen_bis
+key: value
+
+    EOS
+    it 'understands empty section_suffix' do
+      resource = Puppet::Type::Ini_setting.new(common_params.merge(section: 'section_seventeen', setting: 'key1', value: 'value1', section_prefix: 'section_name: ', section_suffix: ''))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be false
+      provider.create
+      validate_file(expected_content_seventeen, tmpfile)
+    end
+
     expected_content_four = <<-EOS
      [section1]
      # foo=foovalue
