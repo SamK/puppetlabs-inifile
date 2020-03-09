@@ -42,7 +42,9 @@ module Puppet::Util
         r_string += '.'
       end
       r_string += '*)'
-      r_string += Regexp.escape(@section_suffix)
+      if @section_suffix != ''
+        r_string += Regexp.escape(@section_suffix)
+      end
       r_string += '\s*$'
       %r{#{r_string}}
     end
